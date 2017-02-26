@@ -1,0 +1,13 @@
+{% load mynetflix_extras %}
+
+	Title: {{movie.title}} <br />
+	Year: {{movie.year}} <br />
+	Synopsis: {{movie.synopsis}} <br />
+	Poster: {{movie.poster}} <br />
+	Trailer: {{movie.trailer}} <br />
+	Rate: {{movie.clasification}} <br />
+	Country: {{movie.country}} <br />
+	Awards: {{ movie.get_awards | joinby:", " }} <br />
+	Actors: {{ movie.get_actors | joinby:", " }} <br />
+	Genres: {{ movie.get_genres | joinby:", " }} <br />
+	Director: {{ movie.get_directors | joinby:", " }} <br />
