@@ -19,8 +19,7 @@
 		<div class="box1">
 			<span class="header">SEARCH MOVIE</span>
 			<form id="search" method="post">
-				{% csrf_token %} <input id="insearch" type="text" width="50"
-					placeholder="Search per title, actor, price, country...">
+				{% csrf_token %} {{ form }}
 			</form>
 			<p class="text_content">
 				Latest added movies: <br> {% for movie in movie_list %} <span
