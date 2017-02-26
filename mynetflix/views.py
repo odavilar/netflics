@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
-from .models import Movie, Actor, Genre, Director, Award
+from .models import Movie, MovieActor, MovieGenre, MovieDirector, MovieAward
 from .forms import SearchForm
 
 class IndexView(generic.ListView):
@@ -42,3 +42,18 @@ class FormView(generic.FormView):
         context = super(FormView, self).get_context_data(**kwargs)
         context['movie_list'] = Movie.objects.order_by('-pub_date')[:5]
         return context
+
+def search_movie(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = SearchForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect('/thanks/')
+
+    # if a GET (or any other method) we'll create a blank form
+    return HttpResponseRedirect('/')

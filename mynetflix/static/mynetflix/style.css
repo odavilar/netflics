@@ -82,3 +82,44 @@ body {
 	color: #dfdfdf;
 	text-decoration: none;
 }
+
+#movie_details {
+    width: 590px;
+    height: auto;
+    float: left;
+    margin: 5px;
+    font-family: 'Roboto';
+	color: white;
+	text-align: left;
+}
+
+#movie_poster {
+    width:auto;
+    height: auto;
+    margin: 5px;
+    float: left;
+}
+
+#movie_trailer {
+    width: auto;
+    height: auto;
+    margin: 5px;
+    clear: both;
+}
+
+.inmoviedetails
+{
+	width: 800px;
+}
+
+.text_white
+{
+	display: inline-block;
+	width: 80px;
+}
+
+.text_gray
+{
+	color: #bebebe;
+	display: inline-block;
+}

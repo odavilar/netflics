@@ -18,7 +18,7 @@
 		<div class="background"></div>
 		<div class="box1">
 			<span class="header">SEARCH MOVIE</span>
-			<form id="search" method="post">
+			<form id="search" action="{% url 'mynetflix:search_movie'%}" method="post">
 				{% csrf_token %} {{ form }}
 			</form>
 			<p class="text_content">
@@ -26,7 +26,7 @@
 					class="latest_movies">Title: <a
 					href="{% url 'mynetflix:detail' movie.id %}">{{movie.title}}</a>,
 					Year: {{movie.year}}
-				</span> {% endfor %}
+				</span><br /> {% endfor %}
 			</p>
 		</div>
 	</div>
