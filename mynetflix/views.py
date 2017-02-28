@@ -2,9 +2,10 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
-
+from django.db.models import Min
 from .models import Movie, MovieActor, MovieGenre, MovieDirector, MovieAward
 from .forms import SearchForm
+from mynetflix.templatetags.mynetflix_extras import joinby
 
 class IndexView(generic.ListView):
     template_name = 'mynetflix/index.html'
@@ -53,7 +54,38 @@ def search_movie(request):
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
-            return HttpResponseRedirect('/thanks/')
+            data_to_search = form.cleaned_data['search_text']
+            type_to_search = form.cleaned_data['search_by']
+
+            if type_to_search == SearchForm.TITLE:
+                data_output = Movie.objects.filter(title__icontains=data_to_search)
+                data_output = list(data_output.values_list('title',flat=True))
+                data_output = joinby(data_output, ', ')
+                return HttpResponse("Movie results %s." % data_output)
+
+            if type_to_search == SearchForm.DIRECTOR:
+                data_output = MovieDirector.objects.filter(director__icontains=data_to_search)
+                data_output = list(data_output.values_list('director',flat=True))
+                data_output = joinby(data_output, ', ')
+                return HttpResponse("Director results %s." % data_output)
+
+            if type_to_search == SearchForm.COUNTRY:
+                data_output = Movie.objects.filter(country__icontains=data_to_search)
+                data_output = list(data_output.values_list('country',flat=True))
+                data_output = joinby(data_output, ', ')
+                return HttpResponse("Country results %s." % data_output)
+
+            if type_to_search == SearchForm.PRICES:
+                data_output = MovieAward.objects.filter(award__award_name__icontains=data_to_search)
+                data_output = list(data_output.values_list('award__award_name',flat=True))
+                data_output = joinby(data_output, ', ')
+                return HttpResponse("Award results %s." % data_output)
+
+            if type_to_search == SearchForm.ACTOR:
+                data_output = MovieActor.objects.filter(actor__icontains=data_to_search)
+                data_output = list(data_output.values_list('actor',flat=True))
+                data_output = joinby(data_output, ', ')
+                return HttpResponse("Actor results %s." % data_output)
 
     # if a GET (or any other method) we'll create a blank form
     return HttpResponseRedirect('/')

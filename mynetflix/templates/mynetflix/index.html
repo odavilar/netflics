@@ -21,6 +21,7 @@
 			<form id="search" action="{% url 'mynetflix:search_movie'%}" method="post">
 				{% csrf_token %} {{ form }}
 			</form>
+			<div id="resultados">
 			<p class="text_content">
 				Latest added movies: <br> {% for movie in movie_list %} <span
 					class="latest_movies">Title: <a
@@ -28,6 +29,7 @@
 					Year: {{movie.year}}
 				</span><br /> {% endfor %}
 			</p>
+			</div>
 		</div>
 	</div>
 </body>

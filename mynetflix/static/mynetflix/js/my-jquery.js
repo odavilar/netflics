@@ -5,7 +5,7 @@ $(document).ready(function() {
 	});
 
 	$("#insearch").blur(function() {
-		$(this).attr("placeholder", "Search per title, actor, price, country...");
+		$(this).attr("placeholder", "Search...");
 	});
 
 });
