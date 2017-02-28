@@ -105,7 +105,8 @@ def MovieListbyAward(request, data):
 
 def MovieListbyDirector(request, data):
     data = data.replace("-"," ")
-    data_output = list(Movie.objects.filter(moviedirector__director__iexact=data))
+    data = data.title()
+    data_output = list(Movie.objects.filter(moviedirector__director=data))
     context = {'title':data, 'results': data_output}
     return render(request, 'mynetflix/movielistby.html', context)
 
