@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 from django.db.models import Min
-from .models import Movie, MovieActor, MovieGenre, MovieDirector, MovieAward
+from .models import Movie, Actor, Award, Director, Country
 from .forms import SearchForm
 from mynetflix.templatetags.mynetflix_extras import joinby
 
@@ -59,33 +59,57 @@ def search_movie(request):
 
             if type_to_search == SearchForm.TITLE:
                 data_output = Movie.objects.filter(title__icontains=data_to_search)
-                data_output = list(data_output.values_list('title',flat=True))
-                data_output = joinby(data_output, ', ')
-                return HttpResponse("Movie results %s." % data_output)
+                data_output = list(data_output)
+                context = {'search_type':'movie', 'results': data_output}
+                return render(request, 'mynetflix/results.html', context)
 
             if type_to_search == SearchForm.DIRECTOR:
-                data_output = MovieDirector.objects.filter(director__icontains=data_to_search)
+                data_output = Director.objects.filter(director__icontains=data_to_search)
                 data_output = list(data_output.values_list('director',flat=True))
-                data_output = joinby(data_output, ', ')
-                return HttpResponse("Director results %s." % data_output)
+                context = {'search_type':'director', 'results': data_output}
+                return render(request, 'mynetflix/results.html', context)
 
             if type_to_search == SearchForm.COUNTRY:
-                data_output = Movie.objects.filter(country__icontains=data_to_search)
+                data_output = Country.objects.filter(country__icontains=data_to_search)
                 data_output = list(data_output.values_list('country',flat=True))
-                data_output = joinby(data_output, ', ')
-                return HttpResponse("Country results %s." % data_output)
+                context = {'search_type':'country', 'results': data_output}
+                return render(request, 'mynetflix/results.html', context)
 
             if type_to_search == SearchForm.PRICES:
-                data_output = MovieAward.objects.filter(award__award_name__icontains=data_to_search)
-                data_output = list(data_output.values_list('award__award_name',flat=True))
-                data_output = joinby(data_output, ', ')
-                return HttpResponse("Award results %s." % data_output)
+                data_output = Award.objects.filter(award_name__icontains=data_to_search)
+                data_output = list(data_output.values_list('award_name',flat=True))
+                context = {'search_type':'award', 'results': data_output}
+                return render(request, 'mynetflix/results.html', context)
 
             if type_to_search == SearchForm.ACTOR:
-                data_output = MovieActor.objects.filter(actor__icontains=data_to_search)
+                data_output = Actor.objects.filter(actor__icontains=data_to_search)
                 data_output = list(data_output.values_list('actor',flat=True))
-                data_output = joinby(data_output, ', ')
-                return HttpResponse("Actor results %s." % data_output)
+                context = {'search_type':'actor', 'results': data_output}
+                return render(request, 'mynetflix/results.html', context)
 
     # if a GET (or any other method) we'll create a blank form
     return HttpResponseRedirect('/')
+
+def MovieListbyActor(request, data):
+    data = data.replace("-"," ")
+    data = data.title()
+    data_output = list(Movie.objects.filter(movieactor__actor=data))
+    context = {'title':data, 'results': data_output}
+    return render(request, 'mynetflix/movielistby.html', context)
+
+def MovieListbyAward(request, data):
+    data = data.replace("-"," ")
+    data_output = list(Movie.objects.filter(movieaward__award__award_name__iexact=data))
+    context = {'title':data, 'results': data_output}
+    return render(request, 'mynetflix/movielistby.html', context)
+
+def MovieListbyDirector(request, data):
+    data = data.replace("-"," ")
+    data_output = list(Movie.objects.filter(moviedirector__director__iexact=data))
+    context = {'title':data, 'results': data_output}
+    return render(request, 'mynetflix/movielistby.html', context)
+
+def MovieListbyCountry(request, data):
+    data_output = list(Movie.objects.filter(country__country__iexact=data))
+    context = {'title':data, 'results': data_output}
+    return render(request, 'mynetflix/movielistby.html', context)

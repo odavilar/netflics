@@ -10,7 +10,7 @@ class SearchForm(forms.Form):
     (TITLE, 'Title'),
     (DIRECTOR, 'Director'),
     (COUNTRY, 'Country'),
-    (PRICES, 'Prices'),
+    (PRICES, 'Award'),
     (ACTOR, 'Actor')
     )
     search_text = forms.CharField(label='',

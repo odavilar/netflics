@@ -4,6 +4,12 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 # Create your models here.
 
+class Country(models.Model):
+    country = models.CharField(max_length=200, primary_key=True, unique=True)
+
+    def __str__(self):
+        return self.country
+
 @python_2_unicode_compatible
 class Movie(models.Model):
     title = models.CharField(max_length=200)
@@ -12,7 +18,7 @@ class Movie(models.Model):
     poster = models.URLField()
     trailer = models.URLField()
     clasification = models.CharField(max_length=200)
-    country = models.CharField(max_length=200)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
     pub_date = models.DateTimeField('date published',auto_now_add=True)
 
     def __str__(self):
