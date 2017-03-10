@@ -5,7 +5,7 @@ import django
 os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
 django.setup()
 
-from mynetflix.models import Movie, Actor, Genre, Director, Country
+from mynetflics.models import Movie, Actor, Genre, Director, Country
 
 with open('peliculas.txt', 'rb') as tsvin:
     tsvin = csv.reader(tsvin, delimiter='\t')

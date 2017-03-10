@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'm-iptn27_khi(o)kf)7+6juy2m+7d8d)!b(p&l@ync@w!bt_ql'
+SECRET_KEY = 'x_vzc@r61kc6)*@acdr5gq!$9kknzr1#t928f6s1v+wxu+n9e@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 #   'polls.apps.PollsConfig',
     'django.contrib.humanize',
-    'mynetflix.apps.MynetflixConfig'
+    'mynetflics.apps.MynetflicsConfig'
 ]
 
 MIDDLEWARE = [

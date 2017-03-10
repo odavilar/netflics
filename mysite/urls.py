@@ -15,11 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-import mynetflix
+import mynetflics
 
 urlpatterns = [
-#    url(r'^polls/', include('polls.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^', include('mynetflix.urls')), #default to movies
-    url(r'^movie/', include('mynetflix.urls')),
+    url(r'^', include('mynetflics.urls')), #default to movies
+    url(r'^movie/', include('mynetflics.urls')),
 ]
