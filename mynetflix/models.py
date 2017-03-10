@@ -5,7 +5,7 @@ from django.utils.encoding import python_2_unicode_compatible
 # Create your models here.
 
 class Country(models.Model):
-    country = models.CharField(max_length=200, primary_key=True, unique=True)
+    country = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
         return self.country
@@ -37,7 +37,7 @@ class Movie(models.Model):
         return list(self.moviedirector_set.values_list('director__director',flat=True))
 
 class Actor(models.Model):
-    actor = models.CharField(max_length=200, primary_key=True, unique=True)
+    actor = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
         return self.actor
@@ -51,7 +51,7 @@ class MovieActor(models.Model):
         return self.actor.actor
 
 class Genre(models.Model):
-    genre = models.CharField(max_length=200, primary_key=True, unique=True)
+    genre = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
         return self.genre
@@ -65,7 +65,7 @@ class MovieGenre(models.Model):
         return self.genre.genre
 
 class Director(models.Model):
-    director = models.CharField(max_length=200, primary_key=True, unique=True)
+    director = models.CharField(max_length=200, unique=True)
 
     def __str__(self):
         return self.director
@@ -79,7 +79,7 @@ class MovieDirector(models.Model):
         return self.director.director
 
 class Award(models.Model):
-    award_name = models.CharField(max_length=200, primary_key=True)
+    award_name = models.CharField(max_length=200)
     academy = models.CharField(max_length=200)
 
     def __str__(self):

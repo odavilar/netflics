@@ -24,13 +24,13 @@
 				    {% for result in results %} <span
 					class="latest_movies">
 					{% if search_type == "actor" %}
-					<a href="{% url 'mynetflix:actor' result|slugify %}">{{result}}</a>
+					<a href="{% url 'mynetflix:actor' result.id %}">{{result}}</a>
 					{% elif search_type == "director" %}
-					<a href="{% url 'mynetflix:director' result|slugify %}">{{result}}</a>
+					<a href="{% url 'mynetflix:director' result.id %}">{{result}}</a>
 					{% elif search_type == "country" %}
-					<a href="{% url 'mynetflix:country' result|slugify %}">{{result}}</a>
+					<a href="{% url 'mynetflix:country' result.id %}">{{result}}</a>
 					{% elif search_type == "award" %}
-					<a href="{% url 'mynetflix:award' result|slugify %}">{{result}}</a>
+					<a href="{% url 'mynetflix:award' result.id %}">{{result}}</a>
 					{% elif search_type == "movie" %}
 					<a href="{% url 'mynetflix:detail' result.id %}">{{result.title}}</a>
 					{% endif %}

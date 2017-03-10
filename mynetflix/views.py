@@ -1,11 +1,15 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.views import generic
 from django.db.models import Min
 from .models import Movie, Actor, Award, Director, Country
 from .forms import SearchForm
 from mynetflix.templatetags.mynetflix_extras import joinby
+import json
+from django.core.serializers.json import DjangoJSONEncoder
+from django.core import serializers
+from collections import OrderedDict
 
 class IndexView(generic.ListView):
     template_name = 'mynetflix/index.html'
@@ -65,25 +69,25 @@ def search_movie(request):
 
             if type_to_search == SearchForm.DIRECTOR:
                 data_output = Director.objects.filter(director__icontains=data_to_search)
-                data_output = list(data_output.values_list('director',flat=True))
+                data_output = list(data_output)
                 context = {'search_type':'director', 'results': data_output}
                 return render(request, 'mynetflix/results.html', context)
 
             if type_to_search == SearchForm.COUNTRY:
                 data_output = Country.objects.filter(country__icontains=data_to_search)
-                data_output = list(data_output.values_list('country',flat=True))
+                data_output = list(data_output)
                 context = {'search_type':'country', 'results': data_output}
                 return render(request, 'mynetflix/results.html', context)
 
             if type_to_search == SearchForm.PRICES:
                 data_output = Award.objects.filter(award_name__icontains=data_to_search)
-                data_output = list(data_output.values_list('award_name',flat=True))
+                data_output = list(data_output)
                 context = {'search_type':'award', 'results': data_output}
                 return render(request, 'mynetflix/results.html', context)
 
             if type_to_search == SearchForm.ACTOR:
                 data_output = Actor.objects.filter(actor__icontains=data_to_search)
-                data_output = list(data_output.values_list('actor',flat=True))
+                data_output = list(data_output)
                 context = {'search_type':'actor', 'results': data_output}
                 return render(request, 'mynetflix/results.html', context)
 
@@ -91,26 +95,109 @@ def search_movie(request):
     return HttpResponseRedirect('/')
 
 def MovieListbyActor(request, data):
-    data = data.replace("-"," ")
-    data = data.title()
-    data_output = list(Movie.objects.filter(movieactor__actor=data))
-    context = {'title':data, 'results': data_output}
+    data_output = list(Movie.objects.filter(movieactor__actor__id=data))
+    x = Actor.objects.get(pk=data)
+    context = {'title':x.actor, 'results': data_output}
     return render(request, 'mynetflix/movielistby.html', context)
 
 def MovieListbyAward(request, data):
+    data_output = list(Movie.objects.filter(movieaward__award__id=data))
+    x = Award.objects.get(pk=data)
+    context = {'title':x.award_name, 'results': data_output}
+    return render(request, 'mynetflix/movielistby.html', context)
+
+def MovieListbyDirector(request, data):
+    data_output = list(Movie.objects.filter(moviedirector__director__id=data))
+    x = Director.objects.get(pk=data)
+    context = {'title':x.director, 'results': data_output}
+    return render(request, 'mynetflix/movielistby.html', context)
+
+def MovieListbyCountry(request, data):
+    data_output = list(Movie.objects.filter(country__id=data))
+    x = Country.objects.get(pk=data)
+    context = {'title':x.country, 'results': data_output}
+    return render(request, 'mynetflix/movielistby.html', context)
+
+def MovieListbyActorSlug(request, data):
+    data = data.replace("-"," ")
+    data = data.title()
+    data_output = list(Movie.objects.filter(movieactor__actor__actor=data))
+    context = {'title':data, 'results': data_output}
+    return render(request, 'mynetflix/movielistby.html', context)
+
+def MovieListbyAwardSlug(request, data):
     data = data.replace("-"," ")
     data_output = list(Movie.objects.filter(movieaward__award__award_name__iexact=data))
     context = {'title':data, 'results': data_output}
     return render(request, 'mynetflix/movielistby.html', context)
 
-def MovieListbyDirector(request, data):
+def MovieListbyDirectorSlug(request, data):
     data = data.replace("-"," ")
     data = data.title()
-    data_output = list(Movie.objects.filter(moviedirector__director=data))
+    data_output = list(Movie.objects.filter(moviedirector__director__director=data))
     context = {'title':data, 'results': data_output}
     return render(request, 'mynetflix/movielistby.html', context)
 
-def MovieListbyCountry(request, data):
+def MovieListbyCountrySlug(request, data):
     data_output = list(Movie.objects.filter(country__country__iexact=data))
     context = {'title':data, 'results': data_output}
     return render(request, 'mynetflix/movielistby.html', context)
+
+def MovieApi(request, data):
+    data = data.replace("-"," ")
+    data = data.title()
+    data_output = Movie.objects.get(title__iexact=data)
+    title = data_output.title
+    year = data_output.year
+    synopsis = data_output.synopsis
+    poster = data_output.poster
+    trailer = data_output.trailer
+    country = data_output.country.country
+    clasification = data_output.clasification
+    awards = ', '.join(data_output.get_awards())
+    directors = ', '.join(data_output.get_directors())
+    actors = ', '.join(data_output.get_actors())
+    genres = ', '.join(data_output.get_genres())
+    data = OrderedDict()
+    data['title'] = title
+    data['year'] = year
+    data['synopsis'] = synopsis
+    data['poster'] = poster
+    data['trailer'] = trailer
+    data['country'] = country
+    data['clasification'] = clasification
+    data['directors'] = directors
+    data['actors'] = actors
+    data['genres'] = genres
+    data['awards'] = awards
+    json_data = json.dumps(data)
+    #serialized_q = json.dumps(list(data_output), cls=DjangoJSONEncoder)
+    return HttpResponse(json_data,content_type = "application/json")
+
+def ActorApi(request, data):
+    data = data.replace("-"," ")
+    data = data.title()
+    data_output = Movie.objects.filter(movieactor__actor__actor=data)
+    json_data = serializers.serialize('json', data_output)
+    return HttpResponse(json_data,content_type = "application/json")
+
+def DirectorApi(request, data):
+    data = data.replace("-"," ")
+    data = data.title()
+    data_output = Movie.objects.filter(moviedirector__director__director=data)
+    json_data = serializers.serialize('json', data_output)
+    return HttpResponse(json_data,content_type = "application/json")
+
+def AwardApi(request, data):
+    data = data.replace("-"," ")
+    data = data.title()
+    data_output = Movie.objects.filter(movieaward__award__award_name=data)
+    json_data = serializers.serialize('json', data_output)
+    return HttpResponse(json_data,content_type = "application/json")
+
+def CountryApi(request, data):
+    data = data.replace("-"," ")
+    data = data.title()
+    data_output = Movie.objects.filter(country__country__iexact=data)
+    json_data = serializers.serialize('json', data_output)
+    return HttpResponse(json_data,content_type = "application/json")
