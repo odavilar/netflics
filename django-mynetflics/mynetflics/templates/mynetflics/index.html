@@ -1,0 +1,36 @@
+{% load mynetflics_extras %} {% load staticfiles %}
+
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link
+	href="https://fonts.googleapis.com/css?family=Anton|Baloo|Erica+One|Mr+Dafoe|Open+Sans|Pacifico|Roboto"
+	rel="stylesheet">
+<link rel="stylesheet" type="text/css"
+	href="{% static 'mynetflics/style.css' %}" />
+<script src="{% static 'mynetflics/js/jquery-3.1.1.min.js' %}"></script>
+<script src="{% static 'mynetflics/js/my-jquery.js' %}"></script>
+</head>
+<body>
+	<div class="parent">
+		<div class="background"></div>
+		<div class="box1">
+			<span class="header">SEARCH MOVIE</span>
+			<form id="search" action="{% url 'mynetflics:search_movie'%}" method="post">
+				{% csrf_token %} {{ form }}
+			</form>
+			<div id="resultados">
+			<p class="text_content">
+				Latest added movies: <br> {% for movie in movie_list %} <span
+					class="latest_movies">Title: <a
+					href="{% url 'mynetflics:detail' movie.id %}">{{movie.title}}</a>,
+					Year: {{movie.year}}
+				</span><br /> {% endfor %}
+			</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,7 @@
+include LICENSE
+include README.rst
+recursive-include docs *
+recursive-include extra *
+recursive-include mynetflics/static *
+recursive-include mynetflics/templates *
+recursive-include mynetflics/templatetags *
