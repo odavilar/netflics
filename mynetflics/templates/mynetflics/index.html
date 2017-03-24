@@ -25,7 +25,7 @@
 			<p class="text_content">
 				Latest added movies: <br> {% for movie in movie_list %} <span
 					class="latest_movies">Title: <a
-					href="{% url 'mynetflics:detail' movie.id %}">{{movie.title}}</a>,
+					href="{% url 'mynetflics:detail' movie.slug %}">{{movie.title}}</a>,
 					Year: {{movie.year}}
 				</span><br /> {% endfor %}
 			</p>

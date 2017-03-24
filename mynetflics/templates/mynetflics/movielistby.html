@@ -23,7 +23,7 @@
 			<p class="text_content">
 				    {% for result in results %} <span
 					class="latest_movies">
-					<a href="{% url 'mynetflics:detail' result.id %}">{{result.title}}</a>
+					<a href="{% url 'mynetflics:detail' result.slug %}">{{result.title}}</a>
 				</span><br /> {% endfor %}
 			</p>
 			</div>
