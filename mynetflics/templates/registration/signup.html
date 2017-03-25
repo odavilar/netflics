@@ -1,0 +1,38 @@
+{% extends "mynetflics/base.html" %}
+
+{% block header %}Registrarse{% endblock %}
+
+{% block resultados %}
+<form id="loginform" action='' method="POST">
+        {% csrf_token %}
+<table style="text-align:left;">
+  <tr>
+    <th>{{ form.username.label_tag }}</th>
+    <th>{{ form.username }}</th>
+  </tr>
+  <tr>
+    <td>{{ form.first_name.label_tag }}</td>
+    <td>{{ form.first_name }}</td>
+  </tr>
+  <tr>
+    <td>{{ form.last_name.label_tag }}</td>
+    <td>{{ form.last_name }}</td>
+  </tr>
+  <tr>
+    <td>{{ form.email.label_tag }}</td>
+    <td>{{ form.email }}</td>
+  </tr>
+  <tr>
+    <td>{{ form.password1.label_tag }}</td>
+    <td>{{ form.password1 }}</td>
+  </tr>
+  <tr>
+    <td>{{ form.password2.label_tag }}</td>
+    <td>{{ form.password2 }}</td>
+  </tr>
+  <tr>
+    <td colspan="2" style="text-align: center; padding-top: 10px"><input type="submit" value="Sign Up"><br>{{ form.password2.errors }}</td>
+  </tr>
+</table>
+</form>
+{% endblock %}
