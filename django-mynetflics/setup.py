@@ -33,4 +33,8 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
+    install_requires=[
+          'django-autoslug==1.9.3',
+      ],
+    dependency_links = ['https://github.com/neithere/django-autoslug/archive/v1.9.3.tar.gz#egg=django-autoslug-1.9.3'],
 )

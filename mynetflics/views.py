@@ -4,12 +4,17 @@ from django.urls import reverse
 from django.views import generic
 from django.db.models import Min
 from .models import Movie, Actor, Award, Director, Country
-from .forms import SearchForm
+from .forms import SearchForm, UserCreateForm
 from mynetflics.templatetags.mynetflics_extras import joinby
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
 from collections import OrderedDict
+from django.contrib.auth.models import User
+from django.contrib.auth import logout
+
+def page_not_found_view(request):
+    return render(request, 'mynetflics/404.html')
 
 class IndexView(generic.ListView):
     template_name = 'mynetflics/index.html'
@@ -18,7 +23,7 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return movies ordered by title."""
-        return Movie.objects.order_by('-pub_date')[:5]
+        return Movie.objects.order_by('-pub_date')[:10]
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
@@ -28,6 +33,16 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
     model = Movie
     template_name = 'mynetflics/detail.html'
+
+class SignUpView(generic.CreateView):
+    form_class = UserCreateForm
+    model = User
+    template_name = 'registration/signup.html'
+    success_url = '/'
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/')
 
 class FormView(generic.FormView):
     template_name = 'mynetflics/index.html'

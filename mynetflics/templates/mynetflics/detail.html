@@ -15,7 +15,12 @@
 </head>
 <body>
 	<div class="parent">
-		<div class="homelink"><a href="{% url 'mynetflics:index' %}">Home</a></div>
+	<div class="homelink">
+	<a href="{% url 'mynetflics:index' %}">Home</a> | 
+	{% if request.user.is_authenticated %}
+	Hola {{ request.user.username }} | <a href="{% url 'mynetflics:logout' %}">Logout</a>
+	{% else %}<a href="{% url 'mynetflics:login' %}">Login</a>{% endif %}
+	</div>
 		<div class="background"></div>
 		<div class="box1 inmoviedetails">
 		<div id="movie_title"><span class="header">{{movie.title}}</span></div>

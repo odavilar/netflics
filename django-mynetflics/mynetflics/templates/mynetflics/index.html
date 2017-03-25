@@ -10,11 +10,18 @@
 	rel="stylesheet">
 <link rel="stylesheet" type="text/css"
 	href="{% static 'mynetflics/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'mynetflics/slick/slick.css' %}"/>
+  <link rel="stylesheet" type="text/css" href="{% static 'mynetflics/slick/slick-theme.css' %}"/>
 <script src="{% static 'mynetflics/js/jquery-3.1.1.min.js' %}"></script>
-<script src="{% static 'mynetflics/js/my-jquery.js' %}"></script>
+<script src="{% static 'mynetflics/slick/slick.min.js' %}"></script>
 </head>
 <body>
 	<div class="parent">
+	<div class="homelink">
+	{% if request.user.is_authenticated %}
+	Hola {{ request.user.username }} | <a href="{% url 'mynetflics:logout' %}">Logout</a>
+	{% else %}<a href="{% url 'mynetflics:index' %}">Home</a> | <a href="{% url 'mynetflics:login' %}">Login</a>{% endif %}
+	</div>
 		<div class="background"></div>
 		<div class="box1">
 			<span class="header">SEARCH MOVIE</span>
@@ -23,14 +30,22 @@
 			</form>
 			<div id="resultados">
 			<p class="text_content">
-				Latest added movies: <br> {% for movie in movie_list %} <span
+				Latest added movies: <br> {% for movie in movie_list|slice:":5"%} <span
 					class="latest_movies">Title: <a
-					href="{% url 'mynetflics:detail' movie.id %}">{{movie.title}}</a>,
+					href="{% url 'mynetflics:detail' movie.slug %}">{{movie.title}}</a>,
 					Year: {{movie.year}}
 				</span><br /> {% endfor %}
 			</p>
 			</div>
 		</div>
+		<div id="carousel">
+		<div class="autoplay">
+		{% for movie in movie_list %}
+			<div><a href="{% url 'mynetflics:detail' movie.slug %}"><img src="{{ movie.poster }}" width="182" height="268" alt=""/></a></div>
+		{% endfor %}
+	    </div>
+		</div>
 	</div>
+	<script src="{% static 'mynetflics/js/my-jquery.js' %}"></script>
 </body>
 </html>

@@ -4,12 +4,17 @@ from django.urls import reverse
 from django.views import generic
 from django.db.models import Min
 from .models import Movie, Actor, Award, Director, Country
-from .forms import SearchForm
+from .forms import SearchForm, UserCreateForm
 from mynetflics.templatetags.mynetflics_extras import joinby
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
 from collections import OrderedDict
+from django.contrib.auth.models import User
+from django.contrib.auth import logout
+
+def page_not_found_view(request):
+    return render(request, 'mynetflics/404.html')
 
 class IndexView(generic.ListView):
     template_name = 'mynetflics/index.html'
@@ -18,7 +23,7 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return movies ordered by title."""
-        return Movie.objects.order_by('-pub_date')[:5]
+        return Movie.objects.order_by('-pub_date')[:10]
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
@@ -28,6 +33,16 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
     model = Movie
     template_name = 'mynetflics/detail.html'
+
+class SignUpView(generic.CreateView):
+    form_class = UserCreateForm
+    model = User
+    template_name = 'registration/signup.html'
+    success_url = '/'
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/')
 
 class FormView(generic.FormView):
     template_name = 'mynetflics/index.html'
@@ -60,7 +75,7 @@ def search_movie(request):
             # redirect to a new URL:
             data_to_search = form.cleaned_data['search_text']
             type_to_search = form.cleaned_data['search_by']
-
+            print 'hola'
             if type_to_search == SearchForm.TITLE:
                 data_output = Movie.objects.filter(title__icontains=data_to_search)
                 data_output = list(data_output)
@@ -95,26 +110,26 @@ def search_movie(request):
     return HttpResponseRedirect('/')
 
 def MovieListbyActor(request, data):
-    data_output = list(Movie.objects.filter(movieactor__actor__id=data))
-    x = Actor.objects.get(pk=data)
+    data_output = list(Movie.objects.filter(movieactor__actor__slug=data))
+    x = Actor.objects.get(slug=data)
     context = {'title':x.actor, 'results': data_output}
     return render(request, 'mynetflics/movielistby.html', context)
 
 def MovieListbyAward(request, data):
-    data_output = list(Movie.objects.filter(movieaward__award__id=data))
-    x = Award.objects.get(pk=data)
+    data_output = list(Movie.objects.filter(movieaward__award__slug=data))
+    x = Award.objects.get(slug=data)
     context = {'title':x.award_name, 'results': data_output}
     return render(request, 'mynetflics/movielistby.html', context)
 
 def MovieListbyDirector(request, data):
-    data_output = list(Movie.objects.filter(moviedirector__director__id=data))
-    x = Director.objects.get(pk=data)
+    data_output = list(Movie.objects.filter(moviedirector__director__slug=data))
+    x = Director.objects.get(slug=data)
     context = {'title':x.director, 'results': data_output}
     return render(request, 'mynetflics/movielistby.html', context)
 
 def MovieListbyCountry(request, data):
-    data_output = list(Movie.objects.filter(country__id=data))
-    x = Country.objects.get(pk=data)
+    data_output = list(Movie.objects.filter(country__slug=data))
+    x = Country.objects.get(slug=data)
     context = {'title':x.country, 'results': data_output}
     return render(request, 'mynetflics/movielistby.html', context)
 
@@ -144,9 +159,7 @@ def MovieListbyCountrySlug(request, data):
     return render(request, 'mynetflics/movielistby.html', context)
 
 def MovieApi(request, data):
-    data = data.replace("-"," ")
-    data = data.title()
-    data_output = Movie.objects.get(title__iexact=data)
+    data_output = Movie.objects.get(slug__iexact=data)
     title = data_output.title
     year = data_output.year
     synopsis = data_output.synopsis
@@ -175,29 +188,21 @@ def MovieApi(request, data):
     return HttpResponse(json_data,content_type = "application/json")
 
 def ActorApi(request, data):
-    data = data.replace("-"," ")
-    data = data.title()
-    data_output = Movie.objects.filter(movieactor__actor__actor=data)
+    data_output = Movie.objects.filter(movieactor__actor__slug=data)
     json_data = serializers.serialize('json', data_output)
     return HttpResponse(json_data,content_type = "application/json")
 
 def DirectorApi(request, data):
-    data = data.replace("-"," ")
-    data = data.title()
-    data_output = Movie.objects.filter(moviedirector__director__director=data)
+    data_output = Movie.objects.filter(moviedirector__director__slug=data)
     json_data = serializers.serialize('json', data_output)
     return HttpResponse(json_data,content_type = "application/json")
 
 def AwardApi(request, data):
-    data = data.replace("-"," ")
-    data = data.title()
-    data_output = Movie.objects.filter(movieaward__award__award_name=data)
+    data_output = Movie.objects.filter(movieaward__award__slug=data)
     json_data = serializers.serialize('json', data_output)
     return HttpResponse(json_data,content_type = "application/json")
 
 def CountryApi(request, data):
-    data = data.replace("-"," ")
-    data = data.title()
-    data_output = Movie.objects.filter(country__country__iexact=data)
+    data_output = Movie.objects.filter(country__slug__iexact=data)
     json_data = serializers.serialize('json', data_output)
     return HttpResponse(json_data,content_type = "application/json")

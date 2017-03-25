@@ -2,10 +2,12 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
+from autoslug import AutoSlugField
 # Create your models here.
 
 class Country(models.Model):
     country = models.CharField(max_length=200, unique=True)
+    slug = AutoSlugField(populate_from='country', unique=True)
 
     def __str__(self):
         return self.country
@@ -20,6 +22,7 @@ class Movie(models.Model):
     clasification = models.CharField(max_length=200)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     pub_date = models.DateTimeField('date published',auto_now_add=True)
+    slug = AutoSlugField(populate_from='title', unique=True)
 
     def __str__(self):
         return self.title
@@ -38,6 +41,7 @@ class Movie(models.Model):
 
 class Actor(models.Model):
     actor = models.CharField(max_length=200, unique=True)
+    slug = AutoSlugField(populate_from='actor', unique=True)
 
     def __str__(self):
         return self.actor
@@ -52,7 +56,8 @@ class MovieActor(models.Model):
 
 class Genre(models.Model):
     genre = models.CharField(max_length=200, unique=True)
-
+    slug = AutoSlugField(populate_from='genre', unique=True)
+    
     def __str__(self):
         return self.genre
 
@@ -66,7 +71,8 @@ class MovieGenre(models.Model):
 
 class Director(models.Model):
     director = models.CharField(max_length=200, unique=True)
-
+    slug = AutoSlugField(populate_from='director', unique=True)
+    
     def __str__(self):
         return self.director
 
@@ -81,7 +87,8 @@ class MovieDirector(models.Model):
 class Award(models.Model):
     award_name = models.CharField(max_length=200)
     academy = models.CharField(max_length=200)
-
+    slug = AutoSlugField(populate_from='award_name', unique=True)
+    
     def __str__(self):
         return self.academy + " - " + self.award_name
 
